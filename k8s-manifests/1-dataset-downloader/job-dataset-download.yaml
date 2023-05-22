@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-dataset-download
+spec:
+  template:
+    spec:
+      containers:
+      - name: coco2017-dataset-downloader
+        image: mtamasdocker/coco2017-dataset-downloader:v1.0
+        env:
+        - name: DATASET_DIR
+          value: "/opt/ml/input/data/coco2017"
+        volumeMounts:
+        - name: pv-dataset
+          mountPath: /opt/ml/input/data/
+      volumes:
+      - name: pv-dataset
+        persistentVolumeClaim:
+          claimName: pvc-dataset
+      restartPolicy: Never
