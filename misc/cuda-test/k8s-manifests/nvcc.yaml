@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nvcc
+spec:
+  restartPolicy: Never
+  containers:
+    - name: nvcc
+      image: "mtamasdocker/cuda-test-11-7:latest"
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+      env:
+       - name: NVIDIA_VISIBLE_DEVICES
+         value: "all"
+       - name: NVIDIA_DRIVER_CAPABILITIES
+         value: "all"

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nvidia-smi
+spec:
+  restartPolicy: Never
+  containers:
+    - name: nvidia-smi
+      image: "nvidia/cuda:11.7.0-devel-ubuntu20.04"
+      command: ["/bin/bash", "-c"]
+      args:
+      - |
+        apt-get update &&  apt-get install -y --no-install-recommends nvidia-utils-515-server
+        nvidia-smi;
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+      env:
+       - name: NVIDIA_VISIBLE_DEVICES
+         value: "all"
+       - name: NVIDIA_DRIVER_CAPABILITIES
+         value: "all"
