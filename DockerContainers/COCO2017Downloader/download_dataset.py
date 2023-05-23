@@ -1,21 +1,40 @@
-import wget, json, zipfile, os, logging
+import wget, json, zipfile, os, logging, shutil
 
 #Variables
 dataset_dir = os.environ.get('DATASET_DIR', 'COCODIR')
 
 #Setting up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M'
+)
+
+#Functions
+def clear_directory(target_dir):
+    """
+    Clears out a directory by removing all files inside.
+
+    :param target_dir: The directory to clear.
+    """
+    for filename in os.listdir(target_dir):
+        file_path = os.path.join(target_dir, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            logging.error('Failed to delete %s. Reason: %s' % (file_path, e))
 
 #Create dataset directory structure
 annotations_dir =  os.path.join(dataset_dir, "annotations")
 train_dir = os.path.join(dataset_dir, "train2017")
 val_dir = os.path.join(dataset_dir, "val2017")
 
+logging.info('Create directory structure if not exist here: '+str(dataset_dir))
+
 for directory in annotations_dir,train_dir,val_dir:
   if not os.path.exists(directory):
     os.makedirs(directory)
-
-logging.info('Directory structure created here: {}'.format(str(dataset_dir)))
 
 # Check if the required files exist in the annotations_dir
 required_files = ["instances_train2017.json", "instances_val2017.json"]
@@ -41,10 +60,17 @@ if not files_exist:
     if not file_name.startswith("instances_"):
       file_path = os.path.join(annotations_dir, file_name)
       os.remove(file_path)
+else:
+  logging.info('Skipping the download of annotations, they already exist')
 
 
 # Download validation pictures
 if len(os.listdir(val_dir)) != 5000:
+
+  # Clear out the target directory
+  clear_directory(val_dir)
+
+  # Start downloading
   logging.info('Start download validation pictures')
   images_url = "http://images.cocodataset.org/zips/val2017.zip"
   images_file =  os.path.join(val_dir,"val2017.zip")
@@ -56,8 +82,18 @@ if len(os.listdir(val_dir)) != 5000:
 
   os.remove(images_file)
 
+  logging.info('Validation pictures downloaded')
+
+else:
+  logging.info('Skipping the download of validation pictures, they already exist')
+
 # Download train pictures
 if len(os.listdir(train_dir)) !=118287:
+
+  # Clear out the target directory
+  clear_directory(train_dir)
+
+  # Start downloading
   logging.info('Start download train pictures')
   images_url = "http://images.cocodataset.org/zips/train2017.zip"
   images_file = os.path.join(train_dir,"train2017.zip")
@@ -69,4 +105,8 @@ if len(os.listdir(train_dir)) !=118287:
 
   os.remove(images_file)
 
+else:
+  logging.info('Skipping the download of train pictures, they already exist')
+
 logging.info('Script finished')
+

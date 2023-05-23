@@ -7,10 +7,10 @@ WORKDIR /opt/ml/code
 # Copy the Python script to the working directory
 COPY download_dataset.py /opt/ml/code
 
-# Install any necessary dependencies
+# Copy the requirements.txt  to the working directory
 COPY requirements.txt /opt/ml/code
 
-RUN python -m pip install --upgrade pip
+# Install any necessary dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set the entry point
