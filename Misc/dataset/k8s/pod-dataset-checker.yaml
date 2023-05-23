@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-dataset-checker
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu:20.04
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        apt-get update && apt-get install -y tree;
+        echo '----TREE----';
+        tree /opt/coco2017/annotations;
+        echo '----DU----';
+        du -sh /opt/coco2017/annotations;
+    volumeMounts:
+    - name: data-volume
+      mountPath: /opt
+  volumes:
+  - name: data-volume
+    persistentVolumeClaim:
+      claimName: pvc-dataset
+  restartPolicy: Never
