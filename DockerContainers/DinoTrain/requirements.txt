@@ -1,0 +1,10 @@
+cython
+submitit
+git+https://github.com/cocodataset/panopticapi.git#egg=panopticapi
+scipy
+termcolor
+addict
+yapf
+timm
+pycocotools
+MultiScaleDeformableAttention-1.0-py3-none-any.whl
