@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: dino-trainer
-        image: mtamasdocker/idea-research-dino-train:0.4
+        image: mtamasdocker/idea-research-dino-train:0.6
         env:
         - name: DATASET_DIR
           value: "/opt/ml/input/data/coco2017"

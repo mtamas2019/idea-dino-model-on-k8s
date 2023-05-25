@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: coco2017-dataset-downloader
-        image: mtamasdocker/coco2017-dataset-downloader:latest
+        image: mtamasdocker/coco2017-dataset-downloader:1.0
         env:
         - name: DATASET_DIR
           value: "/opt/ml/input/data/coco2017"
