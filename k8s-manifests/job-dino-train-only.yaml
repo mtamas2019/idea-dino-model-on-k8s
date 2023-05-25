@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-dino-train-only
+spec:
+  template:
+    spec:
+      containers:
+      - name: dino-trainer
+        image: mtamasdocker/idea-research-dino-train:0.4
+        env:
+        - name: DATASET_DIR
+          value: "/opt/ml/input/data/coco2017"
+        volumeMounts:
+        - name: pv-dataset
+          mountPath: /opt/ml/input/data/
+        - name: dshm
+          mountPath: /dev/shm
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+      volumes:
+      - name: pv-dataset
+        persistentVolumeClaim:
+          claimName: pvc-dataset
+      - name: dshm
+        emptyDir:
+          medium: Memory
+      restartPolicy: Never
