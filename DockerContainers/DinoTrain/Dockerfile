@@ -47,24 +47,23 @@ RUN chmod +X scripts/DINO_train.sh
 
 #RUN apt-get install -y nvidia-utils-515-server
 
-#ENTRYPOINT bash scripts/DINO_train.sh $DATASET_DIR
-
 ENV DATASET_DIR /opt/ml/input/data/coco2017
 ENV TRAIN_OUTPUT_DIR logs/DINO/R50-MS4 
-ENV CONFIG_DIR /opt/ml/model/config
+ENV CONFIG_FILE config/DINO/DINO_4scale.py
 ENV WORKERS 1
 ENV NUM_CLASSES 91
 ENV LEARNING_RATE 0.0001
 ENV BATCH_SIZE 2
 ENV EPOCHS 12
 ENV USE_CHECKPOINT TRUE
+ENV USE_EMA False
+ENV DN_SCALAR 100
+ENV EMBED_INIT_TGT True
+ENV DN_LABEL_COEF 1.0
+ENV DN_BBOX_COEF 1.0
+ENV DN_BOX_NOISE_SCALE 1.0
 
-
-ENTRYPOINT bash scripts/DINO_train.sh $DATASET_DIR
-
-
-ENTRYPOINT python main.py --output_dir $TRAIN_OUTPUT_DIR -c config/DINO/DINO_4scale.py --coco_path $DATASET_DIR --num_workers $WORKERS \
-                    --options dn_scalar=100 embed_init_tgt=TRUE \
-                      dn_label_coef=1.0 dn_bbox_coef=1.0 use_ema=False \
-                     dn_box_noise_scale=1.0 \
-                      num_classes=$NUM_CLASSES lr=$LEARNING_RATE batch_size=$BATCH_SIZE epochs=$EPOCHS use_checkpoint=$USE_CHECKPOINT
+ENTRYPOINT python main.py --output_dir $TRAIN_OUTPUT_DIR -c $CONFIG_FILE --coco_path $DATASET_DIR --num_workers $WORKERS \
+                    --options dn_scalar=$DN_SCALAR embed_init_tgt=$EMBED_INIT_TGT dn_label_coef=$DN_LABEL_COEF dn_bbox_coef=$DN_BBOX_COEF use_ema=$USE_EMA \
+                      dn_box_noise_scale=$DN_BOX_NOISE_SCALE  num_classes=$NUM_CLASSES lr=$LEARNING_RATE batch_size=$BATCH_SIZE \
+                      epochs=$EPOCHS use_checkpoint=$USE_CHECKPOINT
