@@ -31,7 +31,9 @@ RUN pip install termcolor addict cython submitit yapf pycocotools timm scipy
 
 WORKDIR /opt/ml/code
 
-RUN git clone https://github.com/IDEA-Research/DINO.git
+#RUN git clone https://github.com/IDEA-Research/DINO.git
+
+RUN git clone https://github.com/mtamas2019/DINO.git
 
 COPY make.sh /opt/ml/code/DINO/models/dino/ops/
 
@@ -39,11 +41,7 @@ WORKDIR /opt/ml/code/DINO/models/dino/ops
 
 RUN bash make.sh
 
-COPY DINO_train.sh /opt/ml/code/DINO/scripts
-
 WORKDIR /opt/ml/code/DINO/
-
-RUN chmod +X scripts/DINO_train.sh
 
 #RUN apt-get install -y nvidia-utils-515-server
 
@@ -63,7 +61,7 @@ ENV DN_LABEL_COEF 1.0
 ENV DN_BBOX_COEF 1.0
 ENV DN_BOX_NOISE_SCALE 1.0
 
-ENTRYPOINT python main.py --output_dir $TRAIN_OUTPUT_DIR -c $CONFIG_FILE --coco_path $DATASET_DIR --num_workers $WORKERS \
+ENTRYPOINT python main.py --output_dir $TRAIN_OUTPUT_DIR -c $CONFIG_FILE --coco_path $DATASET_DIR --num_workers $WORKERS --save_log \
                     --options dn_scalar=$DN_SCALAR embed_init_tgt=$EMBED_INIT_TGT dn_label_coef=$DN_LABEL_COEF dn_bbox_coef=$DN_BBOX_COEF use_ema=$USE_EMA \
                       dn_box_noise_scale=$DN_BOX_NOISE_SCALE  num_classes=$NUM_CLASSES lr=$LEARNING_RATE batch_size=$BATCH_SIZE \
                       epochs=$EPOCHS use_checkpoint=$USE_CHECKPOINT
