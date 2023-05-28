@@ -14,6 +14,8 @@ app = Flask(__name__)
 # Variables
 api_url = str(os.getenv('API_URL', 'http://localhost:8080/inference'))
 port = int(os.getenv('PORT', 80))
+threshold=float(os.getenv('TRESHOLD', 0.5))
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_image():
@@ -41,7 +43,7 @@ def upload_image():
         response = perform_inference(image_path)
 
         # Process the response and overlay on the image
-        annotated_image = overlay_boxes(image_path, response)
+        annotated_image = overlay_boxes(image_path, response,threshold)
 
         # Display the annotated image in the UI
         return render_template('result.html', image_path=image_path, annotated_image=annotated_image)
@@ -70,7 +72,7 @@ def perform_inference(image_path):
 
 import base64
 
-def overlay_boxes(image_path, response, threshold=0.5):
+def overlay_boxes(image_path, response, threshold):
     # Load the image
     image = Image.open(image_path)
     image_np = np.array(image)

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inference
+  template:
+    metadata:
+      labels:
+        app: inference
+    spec:
+      containers:
+      - name: inference
+        image: mtamasdocker/idea-research-dino-inference:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MODEL_CONFIG_PATH
+          value: assets/DINO_4scale.py
+        - name: MODEL_CHECKPOINT_NAME
+          value: assets/checkpoint0023_4scale.pth
+        resources:
+          limits:
+            nvidia.com/gpu: 1   # Specify the number of GPUs required
