@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/jpeg, image/png" required>
+        <br>
+        <br>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>

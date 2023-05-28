@@ -1,7 +1,6 @@
 # Use an official NVIDIA CUDA runtime as a parent image
 FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
 
-# Define environment var for detect GPUs
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update and upgrade Ubuntu packages
