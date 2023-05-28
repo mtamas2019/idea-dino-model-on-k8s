@@ -7,13 +7,43 @@ spec:
     spec:
       containers:
       - name: dino-trainer
-        image: mtamasdocker/idea-research-dino-train:0.6
+        image: mtamasdocker/idea-research-dino-train:1.1
         env:
-        - name: DATASET_DIR
-          value: "/opt/ml/input/data/coco2017"
+          - name: DATASET_DIR
+            value: "/opt/ml/input/data/coco2017"
+          - name: TRAIN_OUTPUT_DIR
+            value: "/opt/ml/model/output/"
+          - name: CONFIG_FILE
+            value: "config/DINO/DINO_4scale.py"
+          - name: WORKERS
+            value: "4"
+          - name: NUM_CLASSES
+            value: "91"
+          - name: LEARNING_RATE
+            value: "0.0001"
+          - name: BATCH_SIZE
+            value: "2"
+          - name: EPOCHS
+            value: "12"
+          - name: USE_CHECKPOINT
+            value: "TRUE"
+          - name: USE_EMA
+            value: "False"
+          - name: DN_SCALAR
+            value: "100"
+          - name: EMBED_INIT_TGT
+            value: "True"
+          - name: DN_LABEL_COEF
+            value: "1.0"
+          - name: DN_BBOX_COEF
+            value: "1.0"
+          - name: DN_BOX_NOISE_SCALE
+            value: "1.0"
         volumeMounts:
         - name: pv-dataset
           mountPath: /opt/ml/input/data/
+        - name: pv-model-output
+          mountPath: /opt/ml/model/output/
         - name: dshm
           mountPath: /dev/shm
         resources:
@@ -23,6 +53,9 @@ spec:
       - name: pv-dataset
         persistentVolumeClaim:
           claimName: pvc-dataset
+      - name: pv-model-output
+        persistentVolumeClaim:
+          claimName: pvc-model-output
       - name: dshm
         emptyDir:
           medium: Memory
