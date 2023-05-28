@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inference Result</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .image {
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inference Result</h1>
+
+    <div class="container">
+        <h2>Annotated Image</h2>
+        <img src="data:image/png;base64,{{ annotated_image }}" class="image">
+    </div>
+</body>
+</html>
