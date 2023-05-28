@@ -23,6 +23,7 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+Label rebuid=1
 # Copy the remaining files into the container
 COPY client.tgz /app
 

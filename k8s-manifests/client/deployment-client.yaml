@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: mtamasdocker/idea-research-dino-client-app:0.1
+        image: mtamasdocker/idea-research-dino-client-app:1.1
         ports:
         - containerPort: 80
         env:
@@ -25,3 +25,5 @@ spec:
           value: "http://service-inference:8080/inference"
         - name: PORT
           value: "80"
+        - name: TRESHOLD
+          value: "0.5"
