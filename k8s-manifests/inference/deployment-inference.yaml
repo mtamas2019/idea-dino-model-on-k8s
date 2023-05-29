@@ -24,4 +24,4 @@ spec:
           value: assets/checkpoint0023_4scale.pth
         resources:
           limits:
-            nvidia.com/gpu: 1   # Specify the number of GPUs required
+            nvidia.com/gpu: 1 

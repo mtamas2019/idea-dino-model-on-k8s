@@ -1,6 +1,7 @@
 # Use an official NVIDIA CUDA runtime as a parent image
 FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
 
+# Disable interactive
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update and upgrade Ubuntu packages
@@ -21,6 +22,7 @@ RUN curl -so ~/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-py39_
     && echo "conda activate base" >> ~/.bashrc
 ENV PATH $CONDA_DIR/bin:$PATH
 
+# Install python packages
 RUN conda install python=3.7.3
 
 RUN conda install numpy
