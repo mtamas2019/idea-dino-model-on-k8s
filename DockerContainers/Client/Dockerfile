@@ -1,5 +1,7 @@
+# Use Ubuntu 20.04 to base image
 FROM ubuntu:20.04
 
+# Disable interactive mode
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update the package lists
@@ -23,18 +25,18 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-Label rebuid=1
-# Copy the remaining files into the container
+# Copy the client application to the container
 COPY client.tgz /app
 
 # Extract the client.tgz file
 RUN tar -xzf client.tgz -C /app
 
-WORKDIR /app/client
-
 # Set the environment variables
-ENV API_URL="http://localhost:8080/inference"
-ENV PORT=80
+ENV API_URL http://localhost:8080/inference
+ENV PORT 80
+ENV TRESHOLD 0.5 
 
 # Set the entry point for the container
+WORKDIR /app/client
+
 ENTRYPOINT ["python3", "client.py"]

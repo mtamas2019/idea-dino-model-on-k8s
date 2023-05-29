@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
+from tabulate import tabulate
 
 log_file = "logfile.txt"
 with open(log_file, "r") as file:
@@ -20,21 +21,22 @@ for log in lines:
 
 df = pd.DataFrame(data)
 
-print(df)
-
-df = df.sort_values('Iteration')
 
 iteration = df['Iteration']
-class_error = df['Class Error']
-loss = df['Loss']
+class_error = df['Class Error'].astype(float)
+loss = df['Loss'].astype(float)
+
+table = pd.DataFrame({'Iteration': iteration, 'Loss': loss, 'Class error':class_error})
+table_str = tabulate(table, headers='keys', tablefmt='psql')
+print(table_str)
 
 fig, ax1 = plt.subplots()
 ax1.plot(iteration, class_error, color='red')
 ax1.set_xlabel('Iteration')
 ax1.set_ylabel('Class Error', color='red')
 ax1.tick_params(axis='y', labelcolor='red')
-ax1.set_yscale('log')
-ax1.set_title('Class Error Trend (Logarithmic Scale)')
+ax1.set_title('Class Error Trend')
+ax1.autoscale(enable=True, axis='y')
 
 plt.savefig('class_error_plot.png')
 
@@ -43,9 +45,7 @@ ax2.plot(iteration, loss, color='blue')
 ax2.set_xlabel('Iteration')
 ax2.set_ylabel('Loss', color='blue')
 ax2.tick_params(axis='y', labelcolor='blue')
-ax2.set_yscale('log')
-ax2.set_title('Loss Trend (Logarithmic Scale)')
+ax2.set_title('Loss Trend')
+ax2.autoscale(enable=True, axis='y')
 
 plt.savefig('loss_plot.png')
-
-plt.show()
