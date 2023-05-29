@@ -1,6 +1,7 @@
 # Use an official NVIDIA CUDA runtime as a parent image
 FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
 
+# Disable apt interactive mode
 ENV DEBIAN_FRONTEND noninteractive
 
 # Update and upgrade Ubuntu packages
@@ -20,6 +21,7 @@ RUN curl -so ~/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-py39_
     && echo "conda activate base" >> ~/.bashrc
 ENV PATH $CONDA_DIR/bin:$PATH
 
+# Install python packages
 RUN conda install python=3.7.3
 
 RUN conda install numpy
@@ -30,10 +32,12 @@ RUN pip install termcolor addict cython submitit yapf pycocotools timm scipy
 
 WORKDIR /opt/ml/code
 
+# Git clone DINO source
 #RUN git clone https://github.com/IDEA-Research/DINO.git
 
 RUN git clone https://github.com/mtamas2019/DINO.git
 
+# Build cuda code in build time
 COPY make.sh /opt/ml/code/DINO/models/dino/ops/
 
 WORKDIR /opt/ml/code/DINO/models/dino/ops
@@ -42,8 +46,7 @@ RUN bash make.sh
 
 WORKDIR /opt/ml/code/DINO/
 
-#RUN apt-get install -y nvidia-utils-515-server
-
+# Define environment variables
 ENV DATASET_DIR /opt/ml/input/data/coco2017
 ENV TRAIN_OUTPUT_DIR logs/DINO/R50-MS4 
 ENV CONFIG_FILE config/DINO/DINO_4scale.py
@@ -60,6 +63,7 @@ ENV DN_LABEL_COEF 1.0
 ENV DN_BBOX_COEF 1.0
 ENV DN_BOX_NOISE_SCALE 1.0
 
+# Run traning code
 ENTRYPOINT python main.py --output_dir $TRAIN_OUTPUT_DIR -c $CONFIG_FILE --coco_path $DATASET_DIR --num_workers $WORKERS --save_log \
                     --options dn_scalar=$DN_SCALAR embed_init_tgt=$EMBED_INIT_TGT dn_label_coef=$DN_LABEL_COEF dn_bbox_coef=$DN_BBOX_COEF use_ema=$USE_EMA \
                       dn_box_noise_scale=$DN_BOX_NOISE_SCALE  num_classes=$NUM_CLASSES lr=$LEARNING_RATE batch_size=$BATCH_SIZE \
