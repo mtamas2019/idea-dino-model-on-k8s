@@ -7,7 +7,7 @@ WORKDIR /opt/ml/code
 # Copy the Python script to the working directory
 COPY download_dataset.py /opt/ml/code
 
-# Copy the requirements.txt  to the working directory
+# Copy the requirements.txt to the working directory
 COPY requirements.txt /opt/ml/code
 
 # Install any necessary dependencies

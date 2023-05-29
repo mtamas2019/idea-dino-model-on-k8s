@@ -12,11 +12,7 @@ logging.basicConfig(
 
 #Functions
 def clear_directory(target_dir):
-    """
-    Clears out a directory by removing all files inside.
-
-    :param target_dir: The directory to clear.
-    """
+    """Clears out a directory by removing all files inside. """
     for filename in os.listdir(target_dir):
         file_path = os.path.join(target_dir, filename)
         try:
@@ -109,4 +105,3 @@ else:
   logging.info('Skipping the download of train pictures, they already exist')
 
 logging.info('Script finished')
-
