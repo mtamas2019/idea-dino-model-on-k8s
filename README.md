@@ -24,7 +24,7 @@ IDEA Research DINO project page: https://github.com/IDEA-Research/DINO
 I wanted to use AWS public cloud, but they did not accept my request for GPU-enabled EC2, so the project was finally implemented in Genesis Cloud. Genesis Cloud is cheaper, however, it significantly limits the possibilities, flexibility, and has lots of limitations.
 Website [genesiscloud.com](https://genesiscloud.com)
 
-I used an RTX 3060 TI GPU ( 8 GB memory), except during training when I used an RTX 3090 (24 GB memory), because the memory of the 3060 TI was insufficient.
+I used an RTX 3060 TI GPU (8 GB memory), except during training when I used an RTX 3090 (24 GB memory), because the memory of the 3060 TI was insufficient.
 
 ## 1. Getting familiar with DINO
 
@@ -93,7 +93,7 @@ IoU metric: bbox
 
 This had to be compiled from CUDA code.  I wanted to create a python package from it, so that during the creation of containers, I don't have to deal with the compilation.
 
-The package creation was successful, it was also installed in the container, but when running, I got a missing attribute error when the code wanted to use this model, package. Due to this, the solution remained that this model was compiled at build time.
+The package creation was successful, it was also installed in the container, but when running, I got a missing attribute error when the code wanted to use this model, package. Due to this, the solution remained that this model was compiled at container build time.
 
 The Python package versions matched during compilation and running, probably the problems arose from the discrepancy between the OS image provided by Genesis Cloud and the image used by the container.
 
@@ -205,7 +205,7 @@ The trend of the loss value already shows a decrease, also minimally in the case
 
 ![class_error](https://raw.githubusercontent.com/mtamas2019/idea-dino-model-on-k8s/main/Misc/analysis/class_error_plot.png "class_error")
 
-## 6. Inference service
+## 7. Inference service
 
 I created an inference service based on FastAPI, which accepts an image at the /inference API endpoint and after prediction, it returns the coordinates of the boxes, the ids of the classes, and the probabilities.
 I used uvicorn, so the code can serve multiple requests at the same time.
@@ -224,7 +224,7 @@ The k8s manifest files were also prepared. For the inference service, a deployme
 * Kubernetes manifests:
    * https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/k8s-manifests/inference
 
-## 7. Client application
+## 8. Client application
 
  As a final step, a Flask client application with a web interface was created
 
@@ -248,8 +248,7 @@ https://drive.google.com/file/d/1b5ayFgTmlTVklUbne5YY5a9gw4LBi79L/view?usp=share
 * Kubernetes manifests:
 https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/DockerContainers/Client
 
-
-## 8. Possible further improvments, developmens
+## 9. Possible further improvments, developments
 
 *  Creating Ingress component for the k8s environment
 *  Creating a Helm chart from the k8s manifests
