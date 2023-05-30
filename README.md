@@ -99,7 +99,7 @@ The Python package versions matched during compilation and running, probably the
 
 Here are the files needed to create the Python package (but this not working, mentioned above): https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/Misc/MultiScaleDeformableAttention
 
-## 2. Kubernetes environment setup
+## 3. Kubernetes environment setup
 
 I created a GPU-supported Kubernetes environment with Minikube using the following documents:
 
@@ -126,7 +126,7 @@ I tested the GPU support of the environment with a container that compiles CUDA 
 Cuda test image: https://hub.docker.com/r/mtamasdocker/cuda-test-11-7
 
 
-## 3. Create dataset downloader container
+## 4. Create dataset downloader container
 
 As a first step, I created a python script that downloads the coco2017 dataset. Then I containerized it. In Kubernetes, I created a job for it as well as a persistent volume.
 
@@ -142,7 +142,7 @@ I used Python 3.7.3 version to ensure the python version is consistent in all co
 
     * https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/k8s-manifests/volumes
 
-## 4. Create parametrized training container
+## 5. Create parametrized training container
 
 Next, I created the training container. I wanted to do this essentially without 
 conda, but this solution did not work due to outdated packages that are no longer available or package compatibility issues. Because of this, I remained with the proven conda solution from the non-container version, with the only change being that I used the Nvidia base image here with cuda 11.7.
@@ -168,7 +168,7 @@ In this example project, I did not use distributed training, I only had one GPU 
 *  Docker images: 
    https://hub.docker.com/r/mtamasdocker/idea-research-dino-train/tags
 
-   (Note: 1.0: contains origional IDE-Research DINO source, 1.1: contains my DINO fork source code with pythorch profiler)
+   (Note: 1.0: contains origional IDE-Research DINO source, 1.1 image version contains my DINO fork source code with pythorch profiler)
 
 * Kubernetes manifests:
    * https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/k8s-manifests/train
@@ -179,7 +179,7 @@ Note:
 I planned to put the dataset downloader and the train containers into one job, and the downloader would be the initcontainer, but eventually they stayed separate, it's probably better to solve this at the workflow management level.
 
 
-## 5. Model train
+## 6. Model train
 
 In the next step, I started the training. In the first round, it turned out that the CUDA code compiled in the environment without a container is not operational, so its compilation was included in the Dockerfile.
 
@@ -224,7 +224,7 @@ The k8s manifest files were also prepared. For the inference service, a deployme
 * Kubernetes manifests:
    * https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/k8s-manifests/inference
 
-## 5. Client application
+## 7. Client application
 
  As a final step, a Flask client application with a web interface was created
 
@@ -239,7 +239,7 @@ The k8s manifest files were also prepared. For the inference service, a deployme
 **A short demonstration video showcasing the functionality:**
 https://drive.google.com/file/d/1b5ayFgTmlTVklUbne5YY5a9gw4LBi79L/view?usp=share_link
 
-* Docker container source: https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/DockerContainers/InferenceService
+* Docker container source: https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/DockerContainers/Client
 
 * Docker images: https://hub.docker.com/r/mtamasdocker/idea-research-dino-client-app/tags
 
@@ -249,10 +249,10 @@ https://drive.google.com/file/d/1b5ayFgTmlTVklUbne5YY5a9gw4LBi79L/view?usp=share
 https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/DockerContainers/Client
 
 
-## 5. Possible further improvments, developmens
+## 8. Possible further improvments, developmens
 
 *  Creating Ingress component for the k8s environment
-*   Creating a Helm chart from the k8s manifests
+*  Creating a Helm chart from the k8s manifests
 *  Optimize container image sizes
 *  Creating an Ansible playbook for establishing a GPU-supported Ubuntu 20.04 and k8s or use AWS (userdata or Deep Learning images)
 *  Developing an ML workflow using Kubeflow or MLflow
