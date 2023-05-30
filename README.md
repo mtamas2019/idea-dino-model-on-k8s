@@ -8,14 +8,16 @@ IDEA Research DINO project page: https://github.com/IDEA-Research/DINO
 
 *   CUDA test container image, for testing CUDA code compilation in a container. https://hub.docker.com/r/mtamasdocker/cuda-test-11-7/tags
 
-*   Coco2017 dataset downloader container image. Dataset website: https://cocodataset.org/#home, Image: https://hub.docker.com/r/mtamasdocker/coco2017-dataset-downloader/tags
-coco2017
+*   Coco2017 dataset downloader container image. Dataset website: https://cocodataset.org/#home,
+    Image: https://hub.docker.com/r/mtamasdocker/coco2017-dataset-downloader/tags
+
 *  Training container. Image: https://hub.docker.com/r/mtamasdocker/idea-research-dino-train/tags
 
-*  Inference Service, based on Flask API. Image: https://hub.docker.com/r/mtamasdocker/idea-research-dino-inference/tags
+*  Inference Service, based on Flask API. 
+   Image: https://hub.docker.com/r/mtamasdocker/idea-research-dino-inference/tags
 
-* Client app with web UI for inference testing. Image: https://hub.docker.com/r/mtamasdocker/idea-research-dino-client-app/tags
-
+* Client app with web UI for inference testing.
+  Image: https://hub.docker.com/r/mtamasdocker/idea-research-dino-client-app/tags
 
 **Infrasturcutre:**
 
@@ -89,19 +91,17 @@ IoU metric: bbox
 
 ## 2. Deformable-Convolution-V2-PyTorch
 
-This had to be compiled from CUDA code.  I wanted to create a python package from it, so that during the creation of containers, we don't have to deal with the compilation.
+This had to be compiled from CUDA code.  I wanted to create a python package from it, so that during the creation of containers, I don't have to deal with the compilation.
 
-The package creation was successful, it was also installed in the container, but when running, I got a missing attribute error when the code wanted to use this model,package. Due to this, the solution remained that this model was compiled at build time.
+The package creation was successful, it was also installed in the container, but when running, I got a missing attribute error when the code wanted to use this model, package. Due to this, the solution remained that this model was compiled at build time.
 
 The Python package versions matched during compilation and running, probably the problems arose from the discrepancy between the OS image provided by Genesis Cloud and the image used by the container.
 
 Here are the files needed to create the Python package (but this not working, mentioned above): https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/Misc/MultiScaleDeformableAttention
 
-(Note: This model caused the most problems, difficulties during the project).
-
 ## 2. Kubernetes environment setup
 
-I created a GPU-supported Kubernetes environment using the following documents with Minikube.
+I created a GPU-supported Kubernetes environment with Minikube using the following documents:
 
 * Nvidia container toolkit: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installation-guide
 
@@ -112,7 +112,7 @@ I created a GPU-supported Kubernetes environment using the following documents w
 * Minikube GPU support: https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/
 
 
-I used Minikube with none driver and kubernetes 1.23. I used 1.23 old k8s version, because more things have changed in the newer versions, more packages and configurations are needed for it, and I wanted to save time with this, because the main focus of the project was not to run the environment on the latest version of k8s
+I used Minikube with none driver and kubernetes 1.23. I used 1.23 old k8s version, because more things have changed in the newer versions, more packages and configurations are needed for it and I wanted to save time with this, because the main focus of the project was not to run the environment on the latest version of k8s
 
 ```
  minikube start --driver=none --kubernetes-version=v1.23.0
@@ -155,7 +155,7 @@ Example build command:
 ```
 DOCKER_BUILDKIT=0 docker build -t dinotrain:1.0 . --network=host
 ```
-**Important:** If the cuda cuda code fails check the /etc/docker/daemon.json file that was properly set according to the nvidia documentation. 
+**Important:** If the cuda code compilation fails check the /etc/docker/daemon.json file that was properly set according to the nvidia documentation. 
 
 Following this, I created the appropriate k8s manifest files. Here, I also used a job. Furthermore, two persistent volumes. One contains the dataset downloaded by the previous job, the other contains the directory of the training output. Checkpoints, logs, and config file dumps go into the output directory.
 
@@ -179,9 +179,9 @@ Note:
 I planned to put the dataset downloader and the train containers into one job, and the downloader would be the initcontainer, but eventually they stayed separate, it's probably better to solve this at the workflow management level.
 
 
-## 4. Model train
+## 5. Model train
 
-is "In the next step, I started the training. In the first round, it turned out that the CUDA code compiled in the environment without a container is not operational, so its compilation was included in the Dockerfile.
+In the next step, I started the training. In the first round, it turned out that the CUDA code compiled in the environment without a container is not operational, so its compilation was included in the Dockerfile.
 
 After solving this, the next problem occurred, which was the lack of GPU memory. I solved this by swapping the GPU in a virtual machine, and from then on, I started the training on an RTX 3090. Then the training started properly.
 
@@ -195,7 +195,9 @@ My github repository with profiler: https://github.com/mtamas2019/DINO
 
 Finally, I ran the training for about 1.5 hours, and the logs of it can be found here: https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/RunResults/1
 
-There was limited data available, so I created a simple python analysis script that reads a few parameters from the log file into a pandas dataframe and plots two values: the loss and the class_error
+There was limited data available, so I created a simple python analysis script that reads a few parameters from the log file into a pandas dataframe and plots two values: the loss and the class_error.
+
+Analysis script: https://github.com/mtamas2019/idea-dino-model-on-k8s/blob/main/Misc/analysis/analysis.py
 
 The trend of the loss value already shows a decrease, also minimally in the case of class_error, but this training time was not enough for significant change
 
@@ -203,7 +205,7 @@ The trend of the loss value already shows a decrease, also minimally in the case
 
 ![class_error](https://raw.githubusercontent.com/mtamas2019/idea-dino-model-on-k8s/main/Misc/analysis/class_error_plot.png "class_error")
 
-## 4. Inference service
+## 6. Inference service
 
 I created an inference service based on FastAPI, which accepts an image at the /inference API endpoint and after prediction, it returns the coordinates of the boxes, the ids of the classes, and the probabilities.
 I used uvicorn, so the code can serve multiple requests at the same time.
