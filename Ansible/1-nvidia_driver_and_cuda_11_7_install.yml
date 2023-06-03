@@ -1,0 +1,51 @@
+---
+- name: Update and upgrade system packages
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade system packages
+      apt:
+        upgrade: dist
+
+- name: Install NVIDIA drivers and utilities
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install Linux headers
+      apt:
+        name: linux-headers-{{ ansible_kernel }}
+        state: present
+
+    - name: Install NVIDIA driver
+      apt:
+        name: nvidia-driver-515-server
+        state: present
+
+    - name: Install NVIDIA utilities
+      apt:
+        name: nvidia-utils-515-server
+        state: present
+
+- name: Download and install CUDA Toolkit
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Download CUDA installer
+      get_url:
+        url: https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run
+        dest: /tmp/cuda_11.7.0_515.43.04_linux.run
+
+    - name: Run CUDA installer
+      shell: sh cuda_11.7.0_515.43.04_linux.run --silent --toolkit
+      args:
+        chdir: /tmp
+
+    - name: Add CUDA to PATH
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}'
+        state: present
