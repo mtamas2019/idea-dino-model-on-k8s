@@ -4,8 +4,8 @@ FROM ubuntu:20.04
 # Disable interactive mode
 ENV DEBIAN_FRONTEND noninteractive
 
-# Update the package lists
-RUN apt-get update
+# Update and upgrade Ubuntu packages
+RUN apt-get update && apt-get upgrade -y
 
 # Install Python 3.8 and pip
 RUN apt-get install -y python3.8 python3-pip
