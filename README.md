@@ -111,7 +111,7 @@ I created a GPU-supported Kubernetes environment with Minikube using the followi
 
 * Minikube GPU support: https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/
 
-You can use this Ansible playbooks to install nvidia gpu supported docker environment: https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/Ansible
+You can use these Ansible playbooks to install nvidia gpu supported docker environment: https://github.com/mtamas2019/idea-dino-model-on-k8s/tree/main/Ansible
 
 I used Minikube with none driver and kubernetes 1.23. I used 1.23 old k8s version, because more things have changed in the newer versions, more packages and configurations are needed for it and I wanted to save time with this, because the main focus of the project was not to run the environment on the latest version of k8s
 
