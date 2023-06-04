@@ -34,18 +34,29 @@
   hosts: localhost
   become: true
   tasks:
+    - name: Check if CUDA is already installed
+      command: nvcc --version
+      register: cuda_check
+      ignore_errors: true
+      changed_when: false
+      failed_when: cuda_check.rc != 0
+
     - name: Download CUDA installer
       get_url:
         url: https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run
         dest: /tmp/cuda_11.7.0_515.43.04_linux.run
+      when: cuda_check.failed
+
 
     - name: Run CUDA installer
       shell: sh cuda_11.7.0_515.43.04_linux.run --silent --toolkit
       args:
         chdir: /tmp
+      when: cuda_check.failed
 
     - name: Add CUDA to PATH
       lineinfile:
         path: ~/.bashrc
         line: 'export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}'
         state: present
+      when: cuda_check.failed
