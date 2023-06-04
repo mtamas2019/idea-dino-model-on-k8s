@@ -7,10 +7,14 @@ spec:
     spec:
       containers:
       - name: coco2017-dataset-downloader
-        image: mtamasdocker/coco2017-dataset-downloader:1.0
+        image: mtamasdocker/coco2017-dataset-downloader:2.0
         env:
         - name: DATASET_DIR
           value: "/opt/ml/input/data/coco2017"
+        - name: DATASET_DOWNLOAD_SIZE_PERCENT
+          value: "1"
+        - name: CLEAN_DATASET_DIR
+          value: "No"
         volumeMounts:
         - name: pv-dataset
           mountPath: /opt/ml/input/data/
