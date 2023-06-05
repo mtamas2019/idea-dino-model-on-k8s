@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: coco2017-dataset-downloader
-        image: mtamasdocker/coco2017-dataset-downloader:2.0
+        image: mtamasdocker/coco2017-dataset-downloader:3.0
         env:
         - name: DATASET_DIR
           value: "/opt/ml/input/data/coco2017"
@@ -15,6 +15,8 @@ spec:
           value: "1"
         - name: CLEAN_DATASET_DIR
           value: "No"
+        - name: RECREATE_ANNONATIONS
+          value: "Yes"
         volumeMounts:
         - name: pv-dataset
           mountPath: /opt/ml/input/data/

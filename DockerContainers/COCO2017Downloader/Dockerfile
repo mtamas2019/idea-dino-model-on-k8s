@@ -5,7 +5,7 @@ FROM python:3.8.16
 WORKDIR /opt/ml/code
 
 # Copy the Python script to the working directory
-COPY download_dataset_v2.py /opt/ml/code
+COPY download_dataset_v3.py /opt/ml/code
 
 # Copy the requirements.txt to the working directory
 COPY requirements.txt /opt/ml/code
@@ -14,4 +14,4 @@ COPY requirements.txt /opt/ml/code
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set the entry point
-ENTRYPOINT ["python", "download_dataset_v2.py"]
+ENTRYPOINT ["python", "download_dataset_v3.py"]
