@@ -165,7 +165,6 @@ if download_percent != 100:
 
      # Calculate the number of images to download
      image_download_num = int(len(image_ids) * (download_percent) / 100)
-     #image_download_num = 3
 
      # Select a subset of image IDs
      download_image_ids = image_ids[:image_download_num]
